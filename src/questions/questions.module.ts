@@ -5,7 +5,6 @@ import { QuestionRepository } from "./repository/question.repository";
 import { CommandHandlers } from "./commands/handlers";
 import { EventHandlers } from "./events/handlers";
 import { QueryHandlers } from "./queries/handlers";
-import { QuestionsSagas } from "./sagas/questions.sagas";
 
 @Module({
     imports: [CqrsModule],
@@ -15,7 +14,7 @@ import { QuestionsSagas } from "./sagas/questions.sagas";
         ...CommandHandlers,
         ...EventHandlers,
         ...QueryHandlers,
-        // QuestionsSagas
+        // QuestionsSagas add sagas later
     ]
 })
 export class QuestionsModule { }
