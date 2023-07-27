@@ -1,6 +1,8 @@
-import { QuestionCreatedEvent } from "../impl/question-created.event";
+import { AnsweredQuestionHandler } from "./answered-question.handler";
+import { QuestionCreatedHandler } from "./question-created.handler";
 
 export const EventHandlers = [
-    QuestionCreatedEvent
+    QuestionCreatedHandler,
+    AnsweredQuestionHandler
     // TODO other events
 ]

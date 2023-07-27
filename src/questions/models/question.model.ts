@@ -1,18 +1,43 @@
 import { AggregateRoot } from "@nestjs/cqrs";
 import { QuestionCreatedEvent } from "../events/impl/question-created.event";
+import { AnsweredQuestionEvent } from "../events/impl/answered-question.event";
 
-export class Question extends AggregateRoot {
-    [x: string]: any;
+export type QuestionEssentialProperties = Readonly<
+    Required<{
+        id: string,
+        question: string,
+        answer: string
+    }>
+>;
 
-    constructor(private readonly id: string | undefined) {
+export type QuestionOptionalProperties = Readonly<
+    Partial<{
+        guesses: number;
+    }>
+>;
+export type QuestionProperties = QuestionEssentialProperties & QuestionOptionalProperties;
+
+export interface IQuestion {
+    answerQuestion: (answer: string) => void;
+}
+
+export class Question extends AggregateRoot implements IQuestion {
+    private readonly id: string;
+    private readonly question: string;
+    private readonly answer: string;
+
+    constructor(properties: QuestionProperties) {
         super();
-    }
-
-    setData(data: any) {
-        this.data = data;
+        Object.assign(this, properties);
     }
 
     createQuestion() {
-        this.apply(new QuestionCreatedEvent(this.data));
+        this.apply(new QuestionCreatedEvent());
+    }
+
+    answerQuestion(answer: string) {
+        if (this.answer === answer.trim()) {
+            this.apply(new AnsweredQuestionEvent());
+        }
     }
 }

@@ -18,6 +18,8 @@ export class CreateQuestionHandler implements ICommandHandler<CreateQuestionComm
         const question = this.publisher.mergeObjectContext(
             await this.repository.createQuestion(questionDto)
         );
+        
+        question.createQuestion();
         question.commit();
     }
 }

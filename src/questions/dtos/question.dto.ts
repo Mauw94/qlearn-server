@@ -2,7 +2,7 @@ import { IsString } from "class-validator";
 
 export class QuestionDto {
     @IsString()
-    readonly id: string;
+    id: string;
     @IsString()
     question: string;
     @IsString()
