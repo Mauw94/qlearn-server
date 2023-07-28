@@ -5,6 +5,6 @@ import { Logger } from "@nestjs/common";
 @EventsHandler(AnsweredQuestionEvent)
 export class AnsweredQuestionHandler implements IEventHandler<AnsweredQuestionEvent> {
     handle(event: AnsweredQuestionEvent) {
-        Logger.log(event, "answered correctly");
+        Logger.log("AnsweredQuestionEvent", event.answerCorrect);
     }
 }
