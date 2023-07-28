@@ -25,6 +25,7 @@ export class Question extends AggregateRoot implements IQuestion {
     private readonly id: string;
     private readonly question: string;
     private readonly answer: string;
+    private guesses: number;
 
     constructor(properties: QuestionProperties) {
         super();
@@ -36,8 +37,11 @@ export class Question extends AggregateRoot implements IQuestion {
     }
 
     answerQuestion(answer: string) {
+        this.guesses += 1;
         if (this.answer === answer.trim()) {
             this.apply(new AnsweredQuestionEvent());
         }
     }
+
+    // TODO increases guesses count; more than 3 send event for next question?
 }
