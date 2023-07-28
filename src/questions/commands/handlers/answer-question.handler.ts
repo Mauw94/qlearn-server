@@ -1,7 +1,6 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from "@nestjs/cqrs";
 import { AnswerQuestionCommand } from "../impl/answer-question.command";
 import { QuestionRepository } from "src/questions/repository/question.repository";
-import * as clc from 'cli-color';
 
 @CommandHandler(AnswerQuestionCommand)
 export class AnswerQuestionHandler implements ICommandHandler<AnswerQuestionCommand> {
