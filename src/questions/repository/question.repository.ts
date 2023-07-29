@@ -15,34 +15,32 @@ export class QuestionRepository {
     @Inject(CACHING)
     private readonly caching: Caching<Question>;
 
-    // TODO: this on startup
-    // TODO get questions from actual db later on
-    private async initCache(): Promise<void> {
+    async initCache(key: string): Promise<void> {
+        this.caching.clearCache(key);
         const result = questions;
         result.forEach(q => {
-            this.caching.cacheItem(q);
+            this.caching.cacheItem(key, q);
         });
     }
 
-    async createQuestion(questionDto: QuestionDto) {
+    async createQuestion(key: string, questionDto: QuestionDto) {
         const question = this.questionFactory.create(questionDto)
-        this.caching.cacheItem(question);
+        this.caching.cacheItem(key, question);
 
         return question;
     }
 
-    async findAll(): Promise<Question[]> {
-        this.initCache();
-
-        return this.caching.getCache();
+    async findAll(key: string): Promise<Question[]> {
+        return this.caching.getCache(key);
     }
 
-    async findById(id: string): Promise<Question> {
-        return this.caching.getItem(id);
+    async findById(key: string, id: string): Promise<Question> {
+        return this.caching.getItem(key, id);
     }
 
-    async fetchNextQuestion(): Promise<Question> {
-        var cached_items = this.caching.getCache();
+    // TODO: fix
+    async fetchNextQuestion(key: string): Promise<Question> {
+        var cached_items = this.caching.getCache(key);
 
         return cached_items[0]
     }

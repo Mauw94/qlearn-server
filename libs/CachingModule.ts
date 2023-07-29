@@ -2,45 +2,54 @@ import { Module, NotFoundException } from "@nestjs/common";
 import { BaseEntity } from "src/domain/base.entity";
 
 export interface Caching<T extends BaseEntity> {
-    cacheItem: (item: T) => void;
-    getCache: () => T[];
-    getItem: (id: string) => T;
+    cacheItem: (key: string, item: T) => void;
+    getCache: (key: string) => T[];
+    getItem: (key: string, id: string) => T;
     getNotAvailableItems: () => T[];
-    clearCache: () => void;
+    clearCache: (key: string) => void;
     clearNotAvailableItemsCache: () => void;
 }
 
 class CachingImplement<T extends BaseEntity> implements Caching<BaseEntity> {
-    public cachedItems: T[];
+    public cachedItems: { [key: string]: T[] };
     public notAvailableItems: T[];
 
     constructor() {
-        this.cachedItems = [];
+        this.cachedItems = {};
         this.notAvailableItems = [];
     }
-    clearCache(): void {
-        this.cachedItems = [];
+
+    clearCache(key: string): void {
+        this.cachedItems[key] = [];
     }
 
     clearNotAvailableItemsCache(): void {
         this.notAvailableItems = []
     }
 
-    cacheItem(item: T): void {
-        this.cachedItems.push(item);
-    }
-
-    getItem(id: string): T {
-        const item = this.cachedItems.find(x => x.id === id);
-        if (item === undefined || item === null) {
-            throw new NotFoundException();
+    cacheItem(key: string, item: T): void {
+        if (this.cachedItems[key] !== undefined)
+            this.cachedItems[key].push(item)
+        else {
+            this.cachedItems[key] = []
+            this.cachedItems[key].push(item)
         }
-
-        return item;
     }
 
-    getCache(): T[] {
-        return this.cachedItems;
+    getItem(key: string, id: string): T {
+        if (this.cachedItems.hasOwnProperty(key)) {
+            const items = this.cachedItems[key];
+            const item = items.find(x => x.id === id);
+            if (item === undefined || item === null) {
+                throw new NotFoundException();
+            }
+            return item;
+        }
+        throw new NotFoundException()
+    }
+
+    getCache(key: string): T[] {
+        return this.cachedItems[key];
     }
 
     addItemToNotAvailableItems(item: T): void {

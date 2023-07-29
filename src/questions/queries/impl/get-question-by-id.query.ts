@@ -1,5 +1,5 @@
 import { IQuery } from "@nestjs/cqrs";
 
 export class GetQuestionByIdQuery implements IQuery {
-    constructor(readonly id: string) { }
+    constructor(readonly key: string, readonly id: string) { }
 }
