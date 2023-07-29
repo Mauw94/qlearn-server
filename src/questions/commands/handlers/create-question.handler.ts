@@ -1,8 +1,7 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from "@nestjs/cqrs";
 import { CreateQuestionCommand } from "../impl/create-question.command";
 import { QuestionRepository } from "src/questions/repository/question.repository";
-import { Inject, Logger } from "@nestjs/common";
-import { PASSWORD_GENERATOR, PasswordGenerator } from "lib/PasswordModule";
+import { Logger } from "@nestjs/common";
 
 @CommandHandler(CreateQuestionCommand)
 export class CreateQuestionHandler implements ICommandHandler<CreateQuestionCommand>
@@ -12,9 +11,6 @@ export class CreateQuestionHandler implements ICommandHandler<CreateQuestionComm
         private readonly publisher: EventPublisher
     ) { }
 
-    @Inject(PASSWORD_GENERATOR)
-    private readonly passwordGenerator: PasswordGenerator;
-
     async execute(command: CreateQuestionCommand) {
         Logger.log('Async CreateQuestionHandler..', 'CreateQuestionCommand');
 
@@ -22,10 +18,6 @@ export class CreateQuestionHandler implements ICommandHandler<CreateQuestionComm
         const question = this.publisher.mergeObjectContext(
             await this.repository.createQuestion(questionDto)
         );
-
-        // var key = this.passwordGenerator.generateKey("test");
-        // Logger.log(key, "PasswordGenerator");
-        // move to account creation
 
         question.createQuestion();
         question.commit();

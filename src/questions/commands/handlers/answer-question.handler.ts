@@ -9,14 +9,16 @@ export class AnswerQuestionHandler implements ICommandHandler<AnswerQuestionComm
         private readonly publisher: EventPublisher
     ) { }
 
-    async execute(command: AnswerQuestionCommand): Promise<any> {
+    async execute(command: AnswerQuestionCommand): Promise<boolean> {
         const { answer, questionId } = command;
 
         const question = this.publisher.mergeObjectContext(
             await this.repository.findById(questionId)
         );
 
-        question.answerQuestion(answer);
+        var result = question.answerQuestion(answer);
         question.commit();
+
+        return result;
     }
 }

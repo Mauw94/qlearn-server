@@ -25,3 +25,6 @@ use Kafka or Azure service bus?
 
 send message to Azure Service Bus on event completions
 client picks up Azure Service Bus messages and does something with them
+
+*IMPORTANT*
+switching to Topics later on, so all different users have their own filter for the Topics

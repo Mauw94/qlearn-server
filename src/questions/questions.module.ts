@@ -6,10 +6,11 @@ import { CommandHandlers } from "./commands/handlers";
 import { EventHandlers } from "./events/handlers";
 import { QueryHandlers } from "./queries/handlers";
 import { QuestionFactory } from "./question.factory";
-import { PasswordModule } from "lib/PasswordModule";
+import { PasswordModule } from "libs/PasswordModule";
+import { CachingModule } from "libs/CachingModule";
 
 @Module({
-    imports: [CqrsModule, PasswordModule],
+    imports: [CqrsModule, PasswordModule, CachingModule],
     controllers: [QuestionsController],
     providers: [
         QuestionRepository,

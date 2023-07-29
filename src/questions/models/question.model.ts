@@ -36,11 +36,13 @@ export class Question extends AggregateRoot implements IQuestion {
         this.apply(new QuestionCreatedEvent());
     }
 
-    answerQuestion(answer: string) {
+    answerQuestion(answer: string): boolean {
         this.guesses += 1;
-        var answerCorrect = this.answer === answer.trim();
+        var answerCorrect = this.answer === answer.toLowerCase().trim();
 
         this.apply(new AnsweredQuestionEvent(answerCorrect));
+
+        return answerCorrect;
     }
 
     // TODO increases guesses count; more than 3 send event for next question?
