@@ -1,6 +1,7 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from "@nestjs/cqrs";
 import { AnswerQuestionCommand } from "../impl/answer-question.command";
 import { QuestionRepository } from "src/questions/repository/question.repository";
+import { Logger } from "@nestjs/common";
 
 @CommandHandler(AnswerQuestionCommand)
 export class AnswerQuestionHandler implements ICommandHandler<AnswerQuestionCommand> {
@@ -10,6 +11,8 @@ export class AnswerQuestionHandler implements ICommandHandler<AnswerQuestionComm
     ) { }
 
     async execute(command: AnswerQuestionCommand): Promise<boolean> {
+        Logger.log('Async AnswerQuestionHandler..', 'AnswerQuestionCommand');
+
         const { key, answer, questionId } = command;
 
         const question = this.publisher.mergeObjectContext(
