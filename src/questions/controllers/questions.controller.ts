@@ -7,6 +7,7 @@ import { CreateQuestionCommand } from "../commands/impl/create-question.command"
 import { AnswerQuestionCommand } from "../commands/impl/answer-question.command";
 import { GetQuestionByIdQuery } from "../queries/impl/get-question-by-id.query";
 import { InitCacheCommand } from "../commands/impl/init-cache.command";
+import { GetNextQuestionQuery } from "../queries/impl/get-next-question.query";
 
 @Controller('question')
 export class QuestionsController {
@@ -20,14 +21,19 @@ export class QuestionsController {
         return this.commandBus.execute(new CreateQuestionCommand(key, dto));
     }
 
-    @Get(":key")
+    @Get("all/:key")
     async findAll(@Param("key") key: string): Promise<Question[]> {
         return this.queryBus.execute(new GetQuestionsQuery(key));
     }
 
-    @Get(":key/:id")
+    @Get("by_id/:key/:id")
     async getById(@Param("key") key: string, @Param("id") id: string): Promise<Question> {
         return this.queryBus.execute(new GetQuestionByIdQuery(key, id));
+    }
+
+    @Get("get_next/:key")
+    async getNext(@Param("key") key: string): Promise<Question> {
+        return this.queryBus.execute(new GetNextQuestionQuery(key));
     }
 
     @Post("answer/:key/:answer/:id")

@@ -1,1 +1,0 @@
-export * from './get-questions.query';

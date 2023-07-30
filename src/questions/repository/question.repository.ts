@@ -7,8 +7,6 @@ import { CACHING, Caching } from "libs/CachingModule";
 
 @Injectable()
 export class QuestionRepository {
-    private readonly questions: Question[];
-
     constructor(
         private readonly questionFactory: QuestionFactory) { }
 
@@ -16,7 +14,7 @@ export class QuestionRepository {
     private readonly caching: Caching<Question>;
 
     async initCache(key: string): Promise<void> {
-        this.caching.clearCache(key);
+        this.caching.initCache(key);
         const result = questions;
         result.forEach(q => {
             this.caching.cacheItem(key, q);
@@ -38,10 +36,10 @@ export class QuestionRepository {
         return this.caching.getItem(key, id);
     }
 
-    // TODO: fix
     async fetchNextQuestion(key: string): Promise<Question> {
-        var cached_items = this.caching.getCache(key);
+        const item = this.caching.getNextItemFromCache(key);
+        this.caching.addItemToNotAvailableItems(key, item);
 
-        return cached_items[0]
+        return item;
     }
 }
