@@ -38,7 +38,7 @@ export class QuestionRepository {
 
     async fetchNextQuestion(key: string): Promise<Question> {
         const item = this.caching.getNextItemFromCache(key);
-        this.caching.addItemToNotAvailableItems(key, item);
+        this.caching.addLockedItem(key, item);
 
         return item;
     }

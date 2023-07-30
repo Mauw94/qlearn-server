@@ -6,28 +6,28 @@ export interface Caching<T extends BaseEntity> {
     getCache: (key: string) => T[];
     getItem: (key: string, id: string) => T;
     getNextItemFromCache: (key: string) => T;
-    getNotAvailableItems: (key: string) => T[];
+    getLockedItems: (key: string) => T[];
+    clearLockedItemsCache: (key: string) => void;
+    addLockedItem: (key: string, item: T) => void;
     initCache: (key: string) => void;
-    clearNotAvailableItemsCache: (key: string) => void;
-    addItemToNotAvailableItems: (key: string, item: T) => void;
 }
 
 class CachingImplement<T extends BaseEntity> implements Caching<BaseEntity> {
     public cachedItems: { [key: string]: T[] };
-    public notAvailableItems: { [key: string]: T[] };
+    public lockedItems: { [key: string]: T[] };
 
     constructor() {
         this.cachedItems = {};
-        this.notAvailableItems = {};
+        this.lockedItems = {};
     }
 
     initCache(key: string): void {
         this.cachedItems[key] = [];
-        this.notAvailableItems[key] = [];
+        this.lockedItems[key] = [];
     }
 
-    clearNotAvailableItemsCache(key: string): void {
-        this.notAvailableItems[key] = [];
+    clearLockedItemsCache(key: string): void {
+        this.lockedItems[key] = [];
     }
 
     cacheItem(key: string, item: T): void {
@@ -55,24 +55,24 @@ class CachingImplement<T extends BaseEntity> implements Caching<BaseEntity> {
         return this.cachedItems[key];
     }
 
-    addItemToNotAvailableItems(key: string, item: T): void {
-        if (this.notAvailableItems[key] !== undefined) {
-            this.notAvailableItems[key].push(item);
+    addLockedItem(key: string, item: T): void {
+        if (this.lockedItems[key] !== undefined) {
+            this.lockedItems[key].push(item);
         } else {
-            this.notAvailableItems[key] = [];
-            this.notAvailableItems[key].push(item);
+            this.lockedItems[key] = [];
+            this.lockedItems[key].push(item);
         }
     }
 
-    getNotAvailableItems(key: string): T[] {
-        return this.notAvailableItems[key];
+    getLockedItems(key: string): T[] {
+        return this.lockedItems[key];
     }
 
     getNextItemFromCache(key: string): T {
         if (this.cachedItems[key] === undefined) {
             throw new NotFoundException();
         }
-        return this.fetchNext(0, this.cachedItems[key].length, this.notAvailableItems[key], this.cachedItems[key]);
+        return this.fetchNext(0, this.cachedItems[key].length, this.lockedItems[key], this.cachedItems[key]);
     }
 
     private fetchNext(index: number, maxIndex: number, notAvailableItems: T[], cachedItems: T[]): T {
