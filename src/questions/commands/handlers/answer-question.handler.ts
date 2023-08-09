@@ -13,10 +13,10 @@ export class AnswerQuestionHandler implements ICommandHandler<AnswerQuestionComm
     async execute(command: AnswerQuestionCommand): Promise<boolean> {
         Logger.log('Async AnswerQuestionHandler..', 'AnswerQuestionCommand');
 
-        const { key, answer, questionId } = command;
+        const { clientId: clientId, answer, questionId } = command;
 
         const question = this.publisher.mergeObjectContext(
-            await this.repository.findById(key, questionId)
+            await this.repository.findById(clientId, questionId)
         );
 
         var result = question.answerQuestion(answer);

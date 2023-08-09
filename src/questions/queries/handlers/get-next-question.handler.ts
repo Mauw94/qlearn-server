@@ -10,7 +10,7 @@ export class GetNextQuestionHandler implements IQueryHandler<GetNextQuestionQuer
 
     async execute(query: GetNextQuestionQuery): Promise<Question> {
         Logger.log("Async getting question...", "GetNextQuestionQuery");
-        return await this.repository.fetchNextQuestion(query.key);
+        return await this.repository.fetchNextQuestion(query.clientId);
     }
 
 }

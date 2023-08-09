@@ -11,6 +11,6 @@ export class GetQuestionByIdHandler implements IQueryHandler<GetQuestionByIdQuer
 
     async execute(query: GetQuestionByIdQuery): Promise<Question> {
         Logger.log("Async getting question...", "GetQuestionByIdQuery");
-        return this.repository.findById(query.key, query.id);
+        return this.repository.findById(query.clientId, query.id);
     }
 }

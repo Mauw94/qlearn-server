@@ -13,32 +13,32 @@ export class QuestionRepository {
     @Inject(CACHING)
     private readonly caching: Caching<Question>;
 
-    async initCache(key: string): Promise<void> {
-        this.caching.initCache(key);
+    async initCache(clientId: string): Promise<void> {
+        this.caching.initCache(clientId);
         const result = questions;
         result.forEach(q => {
-            this.caching.cacheItem(key, q);
+            this.caching.cacheItem(clientId, q);
         });
     }
 
-    async createQuestion(key: string, questionDto: QuestionDto) {
+    async createQuestion(clientId: string, questionDto: QuestionDto) {
         const question = this.questionFactory.create(questionDto)
-        this.caching.cacheItem(key, question);
+        this.caching.cacheItem(clientId, question);
 
         return question;
     }
 
-    async findAll(key: string): Promise<Question[]> {
-        return this.caching.getCache(key);
+    async findAll(clientId: string): Promise<Question[]> {
+        return this.caching.getCache(clientId);
     }
 
-    async findById(key: string, id: string): Promise<Question> {
-        return this.caching.getItem(key, id);
+    async findById(clientId: string, id: string): Promise<Question> {
+        return this.caching.getItem(clientId, id);
     }
 
-    async fetchNextQuestion(key: string): Promise<Question> {
-        const item = this.caching.getNextItemFromCache(key);
-        this.caching.addLockedItem(key, item);
+    async fetchNextQuestion(clientId: string): Promise<Question> {
+        const item = this.caching.getNextItemFromCache(clientId);
+        this.caching.addLockedItem(clientId, item);
 
         return item;
     }

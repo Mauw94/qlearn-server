@@ -16,33 +16,33 @@ export class QuestionsController {
         private readonly queryBus: QueryBus
     ) { }
 
-    @Post("create/:key")
-    async createQuestion(@Param("key") key: string, @Body() dto: QuestionDto) {
-        return this.commandBus.execute(new CreateQuestionCommand(key, dto));
+    @Post("create/:clientId")
+    async createQuestion(@Param("clientId") clientId: string, @Body() dto: QuestionDto) {
+        return this.commandBus.execute(new CreateQuestionCommand(clientId, dto));
     }
 
-    @Get("all/:key")
-    async findAll(@Param("key") key: string): Promise<Question[]> {
-        return this.queryBus.execute(new GetQuestionsQuery(key));
+    @Get("all/:clientId")
+    async findAll(@Param("clientId") clientId: string): Promise<Question[]> {
+        return this.queryBus.execute(new GetQuestionsQuery(clientId));
     }
 
-    @Get("by_id/:key/:id")
-    async getById(@Param("key") key: string, @Param("id") id: string): Promise<Question> {
-        return this.queryBus.execute(new GetQuestionByIdQuery(key, id));
+    @Get("by_id/:clientId/:id")
+    async getById(@Param("clientId") clientId: string, @Param("id") id: string): Promise<Question> {
+        return this.queryBus.execute(new GetQuestionByIdQuery(clientId, id));
     }
 
-    @Get("get_next/:key")
-    async getNext(@Param("key") key: string): Promise<Question> {
-        return this.queryBus.execute(new GetNextQuestionQuery(key));
+    @Get("get_next/:clientId")
+    async getNext(@Param("clientId") clientId: string): Promise<Question> {
+        return this.queryBus.execute(new GetNextQuestionQuery(clientId));
     }
 
-    @Post("answer/:key/:answer/:id")
-    async answerQuestion(@Param("key") key: string, @Param('answer') answer: string, @Param('id') id: string) {
-        return this.commandBus.execute(new AnswerQuestionCommand(key, answer, id));
+    @Post("answer/:clientId/:answer/:id")
+    async answerQuestion(@Param("clientId") clientId: string, @Param('answer') answer: string, @Param('id') id: string) {
+        return this.commandBus.execute(new AnswerQuestionCommand(clientId, answer, id));
     }
 
-    @Post("init/:key")
-    async initQUestionsCache(@Param("key") key: string): Promise<void> {
-        return this.commandBus.execute(new InitCacheCommand(key));
+    @Post("init/:clientId")
+    async initQUestionsCache(@Param("clientId") clientId: string): Promise<void> {
+        return this.commandBus.execute(new InitCacheCommand(clientId));
     }
 }

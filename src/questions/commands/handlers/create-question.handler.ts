@@ -14,9 +14,9 @@ export class CreateQuestionHandler implements ICommandHandler<CreateQuestionComm
     async execute(command: CreateQuestionCommand) {
         Logger.log('Async CreateQuestionHandler..', 'CreateQuestionCommand');
 
-        const { key, questionDto } = command;
+        const { clientId: clientId, questionDto } = command;
         const question = this.publisher.mergeObjectContext(
-            await this.repository.createQuestion(key, questionDto)
+            await this.repository.createQuestion(clientId, questionDto)
         );
 
         question.createQuestion();

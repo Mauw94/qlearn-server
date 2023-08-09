@@ -2,46 +2,46 @@ import { Module, NotFoundException } from "@nestjs/common";
 import { BaseEntity } from "src/domain/base.entity";
 
 export interface Caching<T extends BaseEntity> {
-    cacheItem: (key: string, item: T) => void;
-    getCache: (key: string) => T[];
-    getItem: (key: string, id: string) => T;
-    getNextItemFromCache: (key: string) => T;
-    getLockedItems: (key: string) => T[];
-    clearLockedItemsCache: (key: string) => void;
-    addLockedItem: (key: string, item: T) => void;
-    initCache: (key: string) => void;
+    cacheItem: (clientId: string, item: T) => void;
+    getCache: (clientId: string) => T[];
+    getItem: (clientId: string, id: string) => T;
+    getNextItemFromCache: (clientId: string) => T;
+    getLockedItems: (clientId: string) => T[];
+    clearLockedItemsCache: (clientId: string) => void;
+    addLockedItem: (clientId: string, item: T) => void;
+    initCache: (clientId: string) => void;
 }
 
 class CachingImplement<T extends BaseEntity> implements Caching<BaseEntity> {
-    public cachedItems: { [key: string]: T[] };
-    public lockedItems: { [key: string]: T[] };
+    public cachedItems: { [clientId: string]: T[] };
+    public lockedItems: { [clientId: string]: T[] };
 
     constructor() {
         this.cachedItems = {};
         this.lockedItems = {};
     }
 
-    initCache(key: string): void {
-        this.cachedItems[key] = [];
-        this.lockedItems[key] = [];
+    initCache(clientId: string): void {
+        this.cachedItems[clientId] = [];
+        this.lockedItems[clientId] = [];
     }
 
-    clearLockedItemsCache(key: string): void {
-        this.lockedItems[key] = [];
+    clearLockedItemsCache(clientId: string): void {
+        this.lockedItems[clientId] = [];
     }
 
-    cacheItem(key: string, item: T): void {
-        if (this.cachedItems[key] !== undefined)
-            this.cachedItems[key].push(item)
+    cacheItem(clientId: string, item: T): void {
+        if (this.cachedItems[clientId] !== undefined)
+            this.cachedItems[clientId].push(item)
         else {
-            this.cachedItems[key] = []
-            this.cachedItems[key].push(item)
+            this.cachedItems[clientId] = []
+            this.cachedItems[clientId].push(item)
         }
     }
 
-    getItem(key: string, id: string): T {
-        if (this.cachedItems.hasOwnProperty(key)) {
-            const items = this.cachedItems[key];
+    getItem(clientId: string, id: string): T {
+        if (this.cachedItems.hasOwnProperty(clientId)) {
+            const items = this.cachedItems[clientId];
             const item = items.find(x => x.id === id);
             if (item === undefined || item === null) {
                 throw new NotFoundException();
@@ -51,28 +51,28 @@ class CachingImplement<T extends BaseEntity> implements Caching<BaseEntity> {
         throw new NotFoundException()
     }
 
-    getCache(key: string): T[] {
-        return this.cachedItems[key];
+    getCache(clientId: string): T[] {
+        return this.cachedItems[clientId];
     }
 
-    addLockedItem(key: string, item: T): void {
-        if (this.lockedItems[key] !== undefined) {
-            this.lockedItems[key].push(item);
+    addLockedItem(clientId: string, item: T): void {
+        if (this.lockedItems[clientId] !== undefined) {
+            this.lockedItems[clientId].push(item);
         } else {
-            this.lockedItems[key] = [];
-            this.lockedItems[key].push(item);
+            this.lockedItems[clientId] = [];
+            this.lockedItems[clientId].push(item);
         }
     }
 
-    getLockedItems(key: string): T[] {
-        return this.lockedItems[key];
+    getLockedItems(clientId: string): T[] {
+        return this.lockedItems[clientId];
     }
 
-    getNextItemFromCache(key: string): T {
-        if (this.cachedItems[key] === undefined) {
+    getNextItemFromCache(clientId: string): T {
+        if (this.cachedItems[clientId] === undefined) {
             throw new NotFoundException();
         }
-        return this.fetchNext(0, this.cachedItems[key].length, this.lockedItems[key], this.cachedItems[key]);
+        return this.fetchNext(0, this.cachedItems[clientId].length, this.lockedItems[clientId], this.cachedItems[clientId]);
     }
 
     private fetchNext(index: number, maxIndex: number, notAvailableItems: T[], cachedItems: T[]): T {

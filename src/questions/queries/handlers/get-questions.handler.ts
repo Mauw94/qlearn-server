@@ -9,6 +9,6 @@ export class GetQuestionsHandler implements IQueryHandler<GetQuestionsQuery> {
 
     async execute(query: GetQuestionsQuery) {
         Logger.log("Async getting questions...", "GetQuestionsQuery");
-        return await this.repository.findAll(query.key);
+        return await this.repository.findAll(query.clientId);
     }
 }
