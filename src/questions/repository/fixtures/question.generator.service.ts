@@ -6,9 +6,9 @@ import { v4 as uuidv4 } from "uuid";
 
 export class QuestionGeneratorService {
 
-    difficulty: Difficulty;
+    difficulty: number;
 
-    constructor(difficulty: Difficulty) {
+    constructor(difficulty: number) {
         this.difficulty = difficulty;
     }
 
@@ -22,7 +22,7 @@ export class QuestionGeneratorService {
     }
 
     public generateQuestion(): Question {
-        switch (this.difficulty) {
+        switch (+this.difficulty) {
             case Difficulty.EASY:
                 return this.generateEasyQuestion();
             case Difficulty.MEDIUM:

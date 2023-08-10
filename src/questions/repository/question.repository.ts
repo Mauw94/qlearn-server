@@ -16,10 +16,10 @@ export class QuestionRepository {
 
     async initCache(difficulty: Difficulty, clientId: string): Promise<void> {
         this.caching.initCache(clientId);
-        const questionGenerator = new QuestionGeneratorService(difficulty);
+        const questionGenerator = new QuestionGeneratorService(difficulty as number);
         const result = questionGenerator.generateQuestions(10);
-        result.forEach(q => {
-            this.caching.cacheItem(clientId, q);
+        result.forEach(item => {
+            this.caching.cacheItem(clientId, item);
         });
     }
 

@@ -8,6 +8,7 @@ import { AnswerQuestionCommand } from "../commands/impl/answer-question.command"
 import { GetQuestionByIdQuery } from "../queries/impl/get-question-by-id.query";
 import { InitCacheCommand } from "../commands/impl/init-cache.command";
 import { GetNextQuestionQuery } from "../queries/impl/get-next-question.query";
+import { Difficulty } from "../models/difficulty.enum";
 
 @Controller('question')
 export class QuestionsController {
@@ -41,8 +42,8 @@ export class QuestionsController {
         return this.commandBus.execute(new AnswerQuestionCommand(clientId, answer, id));
     }
 
-    @Post("init/:clientId")
-    async initQUestionsCache(@Param("clientId") clientId: string): Promise<void> {
-        return this.commandBus.execute(new InitCacheCommand(clientId));
+    @Post("init/:difficulty/:clientId")
+    async initQUestionsCache(@Param("difficulty") difficulty: Difficulty, @Param("clientId") clientId: string): Promise<void> {
+        return this.commandBus.execute(new InitCacheCommand(difficulty, clientId));
     }
 }

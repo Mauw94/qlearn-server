@@ -1,7 +1,7 @@
 export enum Difficulty {
-    EASY,
-    MEDIUM,
-    HARD,
-    VERY_HARD,
-    EINSTEIN
+    EASY = 0,
+    MEDIUM = 1,
+    HARD = 2,
+    VERY_HARD = 3,
+    EINSTEIN = 4
 }
