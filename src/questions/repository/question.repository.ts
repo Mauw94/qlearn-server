@@ -2,8 +2,9 @@ import { Inject, Injectable } from "@nestjs/common";
 import { QuestionDto } from "../dtos/question.dto";
 import { Question } from "../models/question.model";
 import { QuestionFactory } from "../question.factory";
-import { questions } from "./fixtures/question";
 import { CACHING, Caching } from "libs/CachingModule";
+import { Difficulty } from "../models/difficulty.enum";
+import { QuestionGeneratorService } from "./fixtures/question.generator.service";
 
 @Injectable()
 export class QuestionRepository {
@@ -13,9 +14,10 @@ export class QuestionRepository {
     @Inject(CACHING)
     private readonly caching: Caching<Question>;
 
-    async initCache(clientId: string): Promise<void> {
+    async initCache(difficulty: Difficulty, clientId: string): Promise<void> {
         this.caching.initCache(clientId);
-        const result = questions;
+        const questionGenerator = new QuestionGeneratorService(difficulty);
+        const result = questionGenerator.generateQuestions(10);
         result.forEach(q => {
             this.caching.cacheItem(clientId, q);
         });

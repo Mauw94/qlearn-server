@@ -13,6 +13,6 @@ export class InitCacheHandler implements ICommandHandler<InitCacheCommand> {
     async execute(command: InitCacheCommand) {
         Logger.log("Async InitCacheCommand...", "InitCacheHandler");
 
-        await this.repository.initCache(command.clientId);
+        await this.repository.initCache(command.difficulty, command.clientId);
     }
 }
