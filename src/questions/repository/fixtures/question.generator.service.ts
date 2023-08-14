@@ -51,11 +51,14 @@ export class QuestionGeneratorService {
     }
 
     private generateHardQuestion(min: number, max: number, veryHard: boolean): Question {
-        const number1 = this.getRandomNumber(min, max);
-        const number2 = this.getRandomNumber(min, max);
+        let number1 = this.getRandomNumber(min, max);
+        let number2 = this.getRandomNumber(min, max);
         const operator = veryHard
             ? this.getRandomOperator(VeryHardOperator)
             : this.getRandomOperator(HardOperator);
+        const reversed = this.reverseBiggestNumber(operator, number1, number2);
+        number1 = reversed[0];
+        number2 = reversed[1];
         const answer = this.solveForHard(operator, number1, number2);
 
         var dto = new QuestionDto();
@@ -80,6 +83,21 @@ export class QuestionGeneratorService {
         const randomIndex = Math.floor(Math.random() * values.length)
 
         return values[randomIndex];
+    }
+
+    private reverseBiggestNumber(operator: HardOperator | VeryHardOperator, number1: number, number2: number): [number, number] {
+        if (operator === HardOperator.DIVISION
+            || VeryHardOperator.DIVISION
+            || VeryHardOperator.MODULUS) {
+            let temp = 0;
+            if (number2 > number1) {
+                temp = number1;
+                number1 = number2;
+                number2 = temp;
+            }
+        }
+
+        return [number1, number2];
     }
 
     private solveForEasy(operator: EasyOperator | HardOperator | VeryHardOperator, x: number, y: number): number {
