@@ -24,21 +24,21 @@ export class QuestionGeneratorService {
     public generateQuestion(): Question {
         switch (+this.difficulty) {
             case Difficulty.EASY:
-                return this.generateEasyQuestion();
+                return this.generateEasyQuestion(1, 10);
             case Difficulty.MEDIUM:
-                return this.generateMediumQuestion();
+                return this.generateEasyQuestion(1, 20);
             case Difficulty.HARD:
-                return this.generateHardQuestion();
+                return this.generateHardQuestion(1, 10, false);
             case Difficulty.VERY_HARD:
-                return this.generateVeryHardQuestion();
+                return this.generateHardQuestion(1, 20, true);
             case Difficulty.EINSTEIN:
-                return this.generateEinsteinQuestion();
+                return this.generateHardQuestion(1, 50, true);
         }
     }
 
-    private generateEasyQuestion(): Question {
-        const number1 = this.getRandomNumber(1, 10);
-        const number2 = this.getRandomNumber(1, 10);
+    private generateEasyQuestion(min: number, max: number,) {
+        const number1 = this.getRandomNumber(min, max);
+        const number2 = this.getRandomNumber(min, max);
         const operator = this.getRandomOperator(EasyOperator);
         const answer = this.solveForEasy(operator, number1, number2);
 
@@ -50,53 +50,13 @@ export class QuestionGeneratorService {
         return new Question({ ...dto, guesses: 0 });
     }
 
-    private generateMediumQuestion(): Question {
-        const number1 = this.getRandomNumber(1, 20);
-        const number2 = this.getRandomNumber(1, 20);
-        const operator = this.getRandomOperator(EasyOperator);
-        const answer = this.solveForEasy(operator, number1, number2);
-
-        var dto = new QuestionDto();
-        dto.id = uuidv4();
-        dto.question = number1 + operator + number2;
-        dto.answer = answer.toString();
-
-        return new Question({ ...dto, guesses: 0 });
-    }
-
-    private generateHardQuestion(): Question {
-        const number1 = this.getRandomNumber(1, 10);
-        const number2 = this.getRandomNumber(1, 10);
-        const operator = this.getRandomOperator(HardOperator);
+    private generateHardQuestion(min: number, max: number, veryHard: boolean): Question {
+        const number1 = this.getRandomNumber(min, max);
+        const number2 = this.getRandomNumber(min, max);
+        const operator = veryHard
+            ? this.getRandomOperator(VeryHardOperator)
+            : this.getRandomOperator(HardOperator);
         const answer = this.solveForHard(operator, number1, number2);
-
-        var dto = new QuestionDto();
-        dto.id = uuidv4();
-        dto.question = number1 + operator + number2;
-        dto.answer = answer.toString();
-
-        return new Question({ ...dto, guesses: 0 });
-    }
-
-    private generateVeryHardQuestion(): Question {
-        const number1 = this.getRandomNumber(1, 20);
-        const number2 = this.getRandomNumber(1, 20);
-        const operator = this.getRandomOperator(HardOperator);
-        const answer = this.solveForHard(operator, number1, number2);
-
-        var dto = new QuestionDto();
-        dto.id = uuidv4();
-        dto.question = number1 + operator + number2;
-        dto.answer = answer.toString();
-
-        return new Question({ ...dto, guesses: 0 });
-    }
-
-    private generateEinsteinQuestion(): Question {
-        const number1 = this.getRandomNumber(1, 100);
-        const number2 = this.getRandomNumber(1, 100);
-        const operator = this.getRandomOperator(VeryHardOperator);
-        const answer = this.solveForVeryHard(operator, number1, number2);
 
         var dto = new QuestionDto();
         dto.id = uuidv4();
@@ -122,7 +82,7 @@ export class QuestionGeneratorService {
         return values[randomIndex];
     }
 
-    private solveForEasy(operator: EasyOperator, x: number, y: number): number {
+    private solveForEasy(operator: EasyOperator | HardOperator | VeryHardOperator, x: number, y: number): number {
         switch (operator) {
             case EasyOperator.ADDITION:
                 return x + y;
@@ -131,23 +91,21 @@ export class QuestionGeneratorService {
         }
     }
 
-    private solveForHard(operator: HardOperator, x: number, y: number): number {
+    private solveForHard(operator: HardOperator | VeryHardOperator, x: number, y: number): number {
         switch (operator) {
+            // hard operators
             case HardOperator.MULTIPLICATION:
                 return x * y;
             case HardOperator.DIVISION:
-                return x / y;
-        }
-    }
+                return x > y ? +(x / y).toFixed(2) : +(y / x).toFixed(2);
 
-    private solveForVeryHard(operator: VeryHardOperator, x: number, y: number): number {
-        switch (operator) {
+            // very hard operators
             case VeryHardOperator.MULTIPLICATION:
                 return x * y;
             case VeryHardOperator.DIVISION:
-                return x / y;
+                return x > y ? +(x / y).toFixed(2) : +(y / x).toFixed(2);
             case VeryHardOperator.MODULUS:
-                return x % y;
+                return x > y ? +(x % y).toFixed(2) : +(y % x).toFixed(2);
         }
     }
 }
