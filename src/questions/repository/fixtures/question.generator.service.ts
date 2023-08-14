@@ -115,15 +115,15 @@ export class QuestionGeneratorService {
             case HardOperator.MULTIPLICATION:
                 return x * y;
             case HardOperator.DIVISION:
-                return x / y;
+                return +(x / y).toFixed(2);
 
             // very hard operators
             case VeryHardOperator.MULTIPLICATION:
                 return x * y;
             case VeryHardOperator.DIVISION:
-                return x / y;
+                return +(x / y).toFixed(2);
             case VeryHardOperator.MODULUS:
-                return x % y;
+                return +(x % y).toFixed(2);
         }
     }
 }
