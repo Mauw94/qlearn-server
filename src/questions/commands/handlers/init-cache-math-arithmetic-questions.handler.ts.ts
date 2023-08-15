@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { InitCacheMathArithmeticQuestionsCommand } from "../impl/init-cache-math-arithmetic-questions.command";
 import { Logger } from "@nestjs/common";
-import { ArithmeticQuestionsRepository } from "src/questions/repository/question.repository";
+import { ArithmeticQuestionsRepository } from "src/questions/repository/arithmetic-question.repository";
 
 @CommandHandler(InitCacheMathArithmeticQuestionsCommand)
 export class InitCacheMathArithmeticQuestionsHandler implements ICommandHandler<InitCacheMathArithmeticQuestionsCommand> {

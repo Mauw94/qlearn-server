@@ -1,27 +1,32 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { QuestionDto } from "../dtos/question.dto";
+import { CACHING, Caching } from "libs/CachingModule";
+import { REDIS, Redis } from "libs/RedisModule";
 import { Question } from "../models/question.model";
 import { QuestionFactory } from "../question.factory";
-import { CACHING, Caching } from "libs/CachingModule";
+import { QuestionDto } from "../dtos/question.dto";
 import { Difficulty } from "../models/difficulty.enum";
-import { ArithmeticQuestionGeneratorService } from "../services/arithmetic-question-gen-service";
+
+export interface QuestionRepositoryInterface {
+    init(difficulty: Difficulty, clientId: string): Promise<void>;
+}
 
 @Injectable()
-export class ArithmeticQuestionsRepository {
-    constructor(
-        private readonly questionFactory: QuestionFactory) { }
+export class BaseQuestionRepository implements QuestionRepositoryInterface {
+
+    constructor() { }
+
+    @Inject(REDIS)
+    public readonly redis: Redis<Question[]>;
 
     @Inject(CACHING)
-    private readonly cache: Caching<Question>;
+    public readonly cache: Caching<Question>;
 
     async init(difficulty: Difficulty, clientId: string): Promise<void> {
-        const questionGenerator = new ArithmeticQuestionGeneratorService(difficulty as number);
-        const questions = questionGenerator.generateSpecificAmountOfQuestions(100);
-        this.initCache(clientId, questions);
+
     }
 
     async createQuestion(clientId: string, questionDto: QuestionDto) {
-        const question = this.questionFactory.create(questionDto)
+        const question = new Question({ ...questionDto, guesses: 0 })
         this.cache.cacheItem(clientId, question);
 
         return question;
@@ -42,7 +47,7 @@ export class ArithmeticQuestionsRepository {
         return item;
     }
 
-    private initCache(clientId: string, questions: Question[]) {
+    initCache(clientId: string, questions: Question[]) {
         this.cache.initCache(clientId);
         questions.forEach(item => {
             this.cache.cacheItem(clientId, item);

@@ -1,13 +1,13 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { GetQuestionByIdQuery } from "../impl/get-question-by-id.query";
 import { Question } from "src/questions/models/question.model";
-import { ArithmeticQuestionsRepository } from "src/questions/repository/question.repository";
 import { Logger } from "@nestjs/common";
+import { BaseQuestionRepository } from "src/questions/repository/question.repository.interface";
 
 @QueryHandler(GetQuestionByIdQuery)
 export class GetQuestionByIdHandler implements IQueryHandler<GetQuestionByIdQuery> {
 
-    constructor(private readonly repository: ArithmeticQuestionsRepository) { }
+    constructor(private readonly repository: BaseQuestionRepository) { }
 
     async execute(query: GetQuestionByIdQuery): Promise<Question> {
         Logger.log("Async getting question...", "GetQuestionByIdQuery");

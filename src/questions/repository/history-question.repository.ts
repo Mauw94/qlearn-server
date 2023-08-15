@@ -1,40 +1,23 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { REDIS, Redis } from "libs/RedisModule";
+import { Injectable } from "@nestjs/common";
 import { HISTORY_QUESTIONS } from "libs/redis/consts";
 import { HistoryQuestionGeneratorService } from "../services/history-question-gen.service";
 import { Question } from "../models/question.model";
-import { CACHING, Caching } from "libs/CachingModule";
+import { BaseQuestionRepository } from "./question.repository.interface";
+import { Difficulty } from "../models/difficulty.enum";
 
 @Injectable()
-export class HitstoryQuestionRepository {
-    constructor() { }
+export class HitstoryQuestionRepository extends BaseQuestionRepository {
+    constructor() {
+        super();
+    }
 
-    @Inject(REDIS)
-    private readonly redis: Redis<Question[]>;
-
-    @Inject(CACHING)
-    private readonly cache: Caching<Question>;
-
-    // TODO init needs to be called when switching from subject so the cache gets reset
-    // and loaded with new questions specific to the subject.
-    async init(clientId: string) {
+    override async init(difficulty: Difficulty, clientId: string) {
         const questions = await this.generateAndUploadQuestionsToRedis();
         this.initCache(clientId, questions);
 
         const result = await this.redis.get(HISTORY_QUESTIONS);
 
         console.log(result)
-    }
-
-    async set(key: string, value: any) {
-        await this.redis.set(key, value)
-    }
-
-    private async initCache(clientId: string, questions: Question[]) {
-        this.cache.initCache(clientId);
-        questions.forEach(question => {
-            this.cache.cacheItem(clientId, question);
-        });
     }
 
     private async generateAndUploadQuestionsToRedis(): Promise<Question[]> {
