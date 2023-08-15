@@ -12,8 +12,11 @@ export class ArithmeticQuestionGeneratorService implements QuestionGenerator {
     constructor(difficulty: number) {
         this.difficulty = difficulty;
     }
+    generateQuestions(): Question[] {
+        throw new Error("Method not implemented.");
+    }
 
-    public generateQuestions(amount: number): Question[] {
+    public generateSpecificAmountOfQuestions(amount: number): Question[] {
         const result: Question[] = [];
         for (let i = 0; i < amount; i++) {
             result.push(this.generateQuestion());

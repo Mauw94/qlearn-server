@@ -4,11 +4,14 @@ import { QuestionGenerator } from "./question-generator.interface";
 import { v4 as uuidv4 } from "uuid";
 
 export class HistoryQuestionGeneratorService implements QuestionGenerator {
+    public generateSpecificAmountOfQuestions(amount: number): Question[] {
+        throw new Error("Method not implemented.");
+    }
     public generateQuestion(): Question {
         throw new Error("Method not implemented.");
     }
 
-    public generateQuestions(amount: number): Question[] {
+    public generateQuestions(): Question[] {
         return this.generateHistoryQuestions();
     }
 

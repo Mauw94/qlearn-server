@@ -6,10 +6,11 @@ import { QuestionDto } from "../dtos/question.dto";
 import { CreateQuestionCommand } from "../commands/impl/create-question.command";
 import { AnswerQuestionCommand } from "../commands/impl/answer-question.command";
 import { GetQuestionByIdQuery } from "../queries/impl/get-question-by-id.query";
-import { InitCacheCommand } from "../commands/impl/init-cache.command";
+import { InitCacheMathArithmeticQuestionsCommand } from "../commands/impl/init-cache-math-arithmetic-questions.command";
 import { GetNextQuestionQuery } from "../queries/impl/get-next-question.query";
 import { Difficulty } from "../models/difficulty.enum";
 import { GetHistoryQuestionsQuery } from "../queries/impl/get-history-questions.query";
+import { InitCacheHistoryQuestionsCommand } from "../commands/impl/init-cache-history-questions.command";
 
 @Controller('question')
 export class QuestionsController {
@@ -48,8 +49,13 @@ export class QuestionsController {
         return this.commandBus.execute(new AnswerQuestionCommand(clientId, answer, id));
     }
 
-    @Post("init/:difficulty/:clientId")
-    async initQUestionsCache(@Param("difficulty") difficulty: Difficulty, @Param("clientId") clientId: string): Promise<void> {
-        return this.commandBus.execute(new InitCacheCommand(difficulty, clientId));
+    @Post("init/math/arithmetic/:difficulty/:clientId")
+    async initArithmeticQuestionsCache(@Param("difficulty") difficulty: Difficulty, @Param("clientId") clientId: string): Promise<void> {
+        return this.commandBus.execute(new InitCacheMathArithmeticQuestionsCommand(difficulty, clientId));
+    }
+
+    @Post("init/history/:clientId")
+    async initHistoryQuestionsCache(@Param("clientId") clientId: string): Promise<void> {
+        return this.commandBus.execute(new InitCacheHistoryQuestionsCommand(clientId));
     }
 }

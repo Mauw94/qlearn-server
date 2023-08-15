@@ -1,0 +1,1 @@
+export const HISTORY_QUESTIONS = "history_questions";

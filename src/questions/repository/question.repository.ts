@@ -12,36 +12,40 @@ export class ArithmeticQuestionsRepository {
         private readonly questionFactory: QuestionFactory) { }
 
     @Inject(CACHING)
-    private readonly caching: Caching<Question>;
+    private readonly cache: Caching<Question>;
 
-    async initCache(difficulty: Difficulty, clientId: string): Promise<void> {
-        this.caching.initCache(clientId);
+    async init(difficulty: Difficulty, clientId: string): Promise<void> {
         const questionGenerator = new ArithmeticQuestionGeneratorService(difficulty as number);
-        const result = questionGenerator.generateQuestions(100);
-        result.forEach(item => {
-            this.caching.cacheItem(clientId, item);
-        });
+        const questions = questionGenerator.generateSpecificAmountOfQuestions(100);
+        this.initCache(clientId, questions);
     }
 
     async createQuestion(clientId: string, questionDto: QuestionDto) {
         const question = this.questionFactory.create(questionDto)
-        this.caching.cacheItem(clientId, question);
+        this.cache.cacheItem(clientId, question);
 
         return question;
     }
 
     async findAll(clientId: string): Promise<Question[]> {
-        return this.caching.getCache(clientId);
+        return this.cache.getCache(clientId);
     }
 
     async findById(clientId: string, id: string): Promise<Question> {
-        return this.caching.getItem(clientId, id);
+        return this.cache.getItem(clientId, id);
     }
 
     async fetchNextQuestion(clientId: string): Promise<Question> {
-        const item = this.caching.getNextItemFromCache(clientId);
-        this.caching.addLockedItem(clientId, item);
+        const item = this.cache.getNextItemFromCache(clientId);
+        this.cache.addLockedItem(clientId, item);
 
         return item;
+    }
+
+    private initCache(clientId: string, questions: Question[]) {
+        this.cache.initCache(clientId);
+        questions.forEach(item => {
+            this.cache.cacheItem(clientId, item);
+        });
     }
 }

@@ -20,8 +20,6 @@ class RedisImplement<T> implements Redis<T> {
         const value: T = JSON.parse(await client.get(key));
         const result: RedisResult<T> = { value: value }
 
-        console.log(result);
-
         return result;
     }
 

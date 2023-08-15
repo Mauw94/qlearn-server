@@ -12,9 +12,6 @@ export interface Caching<T extends BaseEntity> {
     initCache: (clientId: string) => void;
 }
 
-// TODO different cachers
-// TODO use db for history questions
-// TODO generated questions can be cached since they'll always be different
 class CachingImplement<T extends BaseEntity> implements Caching<BaseEntity> {
     public cachedItems: { [clientId: string]: T[] };
     public lockedItems: { [clientId: string]: T[] };
