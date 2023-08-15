@@ -3,8 +3,9 @@ import { Difficulty } from "src/questions/models/difficulty.enum";
 import { EasyOperator, HardOperator, VeryHardOperator } from "src/questions/models/operator.enum";
 import { Question } from "src/questions/models/question.model"
 import { v4 as uuidv4 } from "uuid";
+import { QuestionGenerator } from "./question-generator.interface";
 
-export class QuestionGeneratorService {
+export class ArithmeticQuestionGeneratorService implements QuestionGenerator {
 
     difficulty: number;
 

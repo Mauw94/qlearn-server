@@ -1,11 +1,11 @@
 import { Difficulty } from 'src/questions/models/difficulty.enum';
-import { QuestionGeneratorService } from 'src/questions/repository/fixtures/question.generator.service';
+import { ArithmeticQuestionGeneratorService } from 'src/questions/services/arithmetic-question-gen-service';
 
-describe('QuestionGeneratorService', () => {
-    let service: QuestionGeneratorService;
+describe('ArithmeticQuestionGeneratorService', () => {
+    let service: ArithmeticQuestionGeneratorService;
 
     beforeEach(async () => {
-        service = new QuestionGeneratorService(Difficulty.EASY);
+        service = new ArithmeticQuestionGeneratorService(Difficulty.EASY);
     });
 
     describe('generateQuestion', () => {

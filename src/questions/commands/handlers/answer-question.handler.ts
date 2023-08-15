@@ -1,12 +1,12 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from "@nestjs/cqrs";
 import { AnswerQuestionCommand } from "../impl/answer-question.command";
-import { QuestionRepository } from "src/questions/repository/question.repository";
+import { ArithmeticQuestionsRepository } from "src/questions/repository/question.repository";
 import { Logger } from "@nestjs/common";
 
 @CommandHandler(AnswerQuestionCommand)
 export class AnswerQuestionHandler implements ICommandHandler<AnswerQuestionCommand> {
     constructor(
-        private readonly repository: QuestionRepository,
+        private readonly repository: ArithmeticQuestionsRepository,
         private readonly publisher: EventPublisher
     ) { }
 

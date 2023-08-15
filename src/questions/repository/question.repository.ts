@@ -4,10 +4,10 @@ import { Question } from "../models/question.model";
 import { QuestionFactory } from "../question.factory";
 import { CACHING, Caching } from "libs/CachingModule";
 import { Difficulty } from "../models/difficulty.enum";
-import { QuestionGeneratorService } from "./fixtures/question.generator.service";
+import { ArithmeticQuestionGeneratorService } from "../services/arithmetic-question-gen-service";
 
 @Injectable()
-export class QuestionRepository {
+export class ArithmeticQuestionsRepository {
     constructor(
         private readonly questionFactory: QuestionFactory) { }
 
@@ -16,7 +16,7 @@ export class QuestionRepository {
 
     async initCache(difficulty: Difficulty, clientId: string): Promise<void> {
         this.caching.initCache(clientId);
-        const questionGenerator = new QuestionGeneratorService(difficulty as number);
+        const questionGenerator = new ArithmeticQuestionGeneratorService(difficulty as number);
         const result = questionGenerator.generateQuestions(100);
         result.forEach(item => {
             this.caching.cacheItem(clientId, item);

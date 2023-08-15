@@ -9,6 +9,7 @@ import { GetQuestionByIdQuery } from "../queries/impl/get-question-by-id.query";
 import { InitCacheCommand } from "../commands/impl/init-cache.command";
 import { GetNextQuestionQuery } from "../queries/impl/get-next-question.query";
 import { Difficulty } from "../models/difficulty.enum";
+import { GetHistoryQuestionsQuery } from "../queries/impl/get-history-questions.query";
 
 @Controller('question')
 export class QuestionsController {
@@ -25,6 +26,11 @@ export class QuestionsController {
     @Get("all/:clientId")
     async findAll(@Param("clientId") clientId: string): Promise<Question[]> {
         return this.queryBus.execute(new GetQuestionsQuery(clientId));
+    }
+
+    @Get("all/history/:clientId")
+    async findAllHistory(@Param("clientId") clientId: string): Promise<Question[]> {
+        return this.queryBus.execute(new GetHistoryQuestionsQuery(clientId));
     }
 
     @Get("by_id/:clientId/:id")
