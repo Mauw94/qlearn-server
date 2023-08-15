@@ -19,7 +19,7 @@ describe('ArithmeticQuestionGeneratorService', () => {
     describe('generateQuestions', () => {
         it('should return newly generated list of questions', () => {
             const amount = 10;
-            const questions = service.generateQuestions(amount);
+            const questions = service.generateSpecificAmountOfQuestions(amount);
             expect(questions).toBeDefined();
             expect(questions.length).toBe(amount)
         })
