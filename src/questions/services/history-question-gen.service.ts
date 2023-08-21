@@ -4,6 +4,7 @@ import { QuestionGenerator } from "./question-generator.interface";
 import { v4 as uuidv4 } from "uuid";
 import * as fs from 'fs';
 import { ParserResult, QUESTIONS_KEY } from "libs/json-parse/parser-result";
+import 'libs/extensions/extensions';
 
 export class HistoryQuestionGeneratorService implements QuestionGenerator {
     public generateSpecificAmountOfQuestions(amount: number): Question[] {
@@ -13,37 +14,33 @@ export class HistoryQuestionGeneratorService implements QuestionGenerator {
         throw new Error("Method not implemented.");
     }
 
-    public generateQuestions(): Question[] {
-        return this.generateHistoryQuestions();
+    public async generateQuestions(): Promise<Question[]> {
+        return await this.generateHistoryQuestions();
     }
 
-    private generateHistoryQuestions() {
-        return this.readFromJson();
+    private async generateHistoryQuestions() {
+        let questions = await this.readFromJson();
+        return questions.shuffle();
     }
 
-    private readFromJson(): Question[] {
+    private async readFromJson(): Promise<Question[]> {
         let questions: Question[] = [];
-        fs.readFile("./src/questions/services/history-questions.json", 'utf8', (err, data) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
+        try {
+            const data = fs.readFileSync("./src/questions/services/history-questions.json", 'utf-8');
+            const parsedResult: ParserResult[] = JSON.parse(data)[QUESTIONS_KEY];
+            parsedResult.forEach(result => {
+                let dto = new QuestionDto();
+                dto.id = uuidv4();
+                dto.question = result.question;
+                dto.answer = result.answer;
+                questions.push(new Question({ ...dto, guesses: 0 }));
+            })
 
-            try {
-                const parsedResult: ParserResult[] = JSON.parse(data)[QUESTIONS_KEY];
-                parsedResult.forEach(result => {
-                    let dto = new QuestionDto();
-                    dto.id = uuidv4();
-                    dto.question = result.question;
-                    dto.answer = result.answer;
-                    questions.push(new Question({ ...dto, guesses: 0 }));
-                })
+            return questions;
+        } catch (err) {
+            console.error(err);
+        }
 
-                return questions;
-            } catch (err) {
-                console.error(err);
-            }
-        });
         return questions;
     }
 }

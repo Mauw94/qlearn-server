@@ -7,6 +7,18 @@
         {
             "question": "In which year did Napoleon die",
             "answer": "1821"
+        },
+        {
+            "question": "Which year was the EU established",
+            "answer": "1993"
+        },
+        {
+            "question": "What was the name of the first president of the USA",
+            "answer": "George Washington"
+        },
+        {
+            "question": "When did Finland gain its independence",
+            "answer": "1917"
         }
     ]
 }
