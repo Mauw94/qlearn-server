@@ -38,7 +38,8 @@ export class Question extends BaseEntity implements IQuestion {
 
     answerQuestion(answer: string): boolean {
         this.guesses += 1;
-        var answerCorrect = this.answer === answer.toLowerCase().trim();
+        var answerCorrect =
+            this.answer.toLowerCase().trim() === answer.toLowerCase().trim();
 
         this.apply(new AnsweredQuestionEvent(answerCorrect));
 
