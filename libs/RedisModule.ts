@@ -5,6 +5,7 @@ import { RedisResult } from './redis/redis-result';
 export interface Redis<T> {
     get(key: string): Promise<RedisResult<T>>;
     set(key: string, value: T): Promise<void>;
+    tryConnection(): Promise<boolean>;
 }
 
 class RedisImplement<T> implements Redis<T> {
@@ -23,8 +24,23 @@ class RedisImplement<T> implements Redis<T> {
         return result;
     }
 
+    public async tryConnection(): Promise<boolean> {
+        const connection = process.env.REDIS_URL;
+        const client = createClient({
+            url: connection
+        });
+
+        try {
+            await client.connect();
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
+
     private async connect() {
-        const connection = `redis://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/`;
+        const connection = process.env.REDIS_URL;
         const client = createClient({
             url: connection
         });

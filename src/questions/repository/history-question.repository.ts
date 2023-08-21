@@ -12,19 +12,24 @@ export class HitstoryQuestionRepository extends BaseQuestionRepository {
     }
 
     override async init(difficulty: Difficulty, clientId: string) {
-        const questions = await this.generateAndUploadQuestionsToRedis();
+        const questions = await this.generateQuestions();
+        await this.tryUploadToRedis(questions);
         this.initCache(clientId, questions);
-
-        const result = await this.redis.get(HISTORY_QUESTIONS);
-
-        console.log(result)
     }
 
-    private async generateAndUploadQuestionsToRedis(): Promise<Question[]> {
+    private async generateQuestions(): Promise<Question[]> {
         const questionGenerator = new HistoryQuestionGeneratorService();
         const questions = questionGenerator.generateQuestions();
-        await this.redis.set(HISTORY_QUESTIONS, questions);
 
         return questions;
+    }
+
+    private async tryUploadToRedis(questions: Question[]): Promise<void> {
+        if (await this.redis.tryConnection()) {
+            await this.redis.set(HISTORY_QUESTIONS, questions);
+        } else {
+            console.info("Did not connect to Redis..");
+            return;
+        }
     }
 }

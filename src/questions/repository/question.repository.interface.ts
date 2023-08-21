@@ -2,7 +2,6 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CACHING, Caching } from "libs/CachingModule";
 import { REDIS, Redis } from "libs/RedisModule";
 import { Question } from "../models/question.model";
-import { QuestionFactory } from "../question.factory";
 import { QuestionDto } from "../dtos/question.dto";
 import { Difficulty } from "../models/difficulty.enum";
 
