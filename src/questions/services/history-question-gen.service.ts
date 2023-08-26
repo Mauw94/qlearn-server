@@ -7,16 +7,12 @@ export class HistoryQuestionGeneratorService implements QuestionGenerator {
     public generateSpecificAmountOfQuestions(amount: number): Question[] {
         throw new Error("Method not implemented.");
     }
+
     public generateQuestion(): Question {
         throw new Error("Method not implemented.");
     }
 
     public async generateQuestions(): Promise<Question[]> {
-        return await this.generateHistoryQuestions();
-    }
-
-    private async generateHistoryQuestions() {
-        let questions = await ReadFromJson();
-        return questions.shuffle();
+        return (await ReadFromJson()).shuffle();
     }
 }
